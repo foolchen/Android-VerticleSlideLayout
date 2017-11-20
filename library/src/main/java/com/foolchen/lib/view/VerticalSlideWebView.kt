@@ -119,7 +119,7 @@ open class VerticalSlideWebView : WebView, IVerticalSlideView {
     }
   }
 
-  private fun getTotalHeight(): Int = Math.floor((contentHeight * mScale).toDouble()).toInt()
+  fun getTotalHeight(): Int = Math.floor((contentHeight * mScale).toDouble()).toInt()
 
   /**
    * [WebViewClient]的装饰类，用于包装直接设置进来的[WebViewClient]

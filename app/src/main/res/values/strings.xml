@@ -1,4 +1,6 @@
 <resources>
   <string name="app_name">Android-WebRecyclerView</string>
   <string name="action_settings">Settings</string>
+  <string name="action_top">第一页</string>
+  <string name="action_bottom">第二页</string>
 </resources>

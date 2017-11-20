@@ -10,6 +10,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import com.foolchen.lib.view.IVerticalPageListener
 import com.foolchen.lib.view.VerticalSlideRecyclerView
 import com.foolchen.lib.view.VerticalSlideWebView
 
@@ -41,6 +42,8 @@ class VerticalSlideLayout : ViewGroup {
   private var mViewHeight = 0
   private var mPage = 0
   private var mAnimationFinished = true// 用于标识View的移动动画是否已结束
+
+  private var mIVerticalPageListener: IVerticalPageListener? = null
 
 
   constructor(context: Context?) : super(context)
@@ -157,6 +160,7 @@ class VerticalSlideLayout : ViewGroup {
           // 如果向上的速度足够大（向上的加速度为负值），或者当前View向上偏移的距离足够大
           // 则认为向上翻页有效，将顶部View的上边缘偏移量设置为-mViewHeight（父布局上边缘外）
           finalTopOffset = -mViewHeight
+          mIVerticalPageListener?.onPageDown()
         }
       } else {
         // 此时为第二个View被释放
@@ -164,6 +168,7 @@ class VerticalSlideLayout : ViewGroup {
           // 如果向下的速度足够大，或者当前View向下偏移的距离足够大
           // 则认为向下翻页有效，将底部View的上边缘偏移量设置为mViewHeight（当前布局初始化时的位置）
           finalTopOffset = mViewHeight
+          mIVerticalPageListener?.onPageUp()
         }
       }
 
@@ -206,7 +211,8 @@ class VerticalSlideLayout : ViewGroup {
     }
   }
 
-  fun autoGoTop() {
+  fun pageUp() {
+    mIVerticalPageListener?.onPageUp()
     if (mPage == 1) {
       // 此处主动触发View的滑动
       if (mDragHelper.smoothSlideViewTo(mViewBottom, 0, mViewHeight)) {// 将底部的View位置复位
@@ -216,7 +222,8 @@ class VerticalSlideLayout : ViewGroup {
     }
   }
 
-  fun autoGoBottom() {
+  fun pageDown() {
+    mIVerticalPageListener?.onPageDown()
     if (mPage == 0) {
       // 此处主动触发View的滑动
       if (mDragHelper.smoothSlideViewTo(mViewTop, 0, -mViewHeight)) {
@@ -224,6 +231,13 @@ class VerticalSlideLayout : ViewGroup {
         mAnimationFinished = false
       }
     }
+  }
+
+  /**
+   * 设置监听页面切换的接口
+   */
+  fun setVerticalPageListener(listener: IVerticalPageListener) {
+    mIVerticalPageListener = listener
   }
 
   private class YScrollDetector : GestureDetector.SimpleOnGestureListener() {

@@ -10,9 +10,10 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.foolchen.lib.view.IVerticalPageListener
+import kotlinx.android.synthetic.main.fragment_web_view.*
 
-class WebViewFragment : Fragment() {
-
+class WebViewFragment : Fragment(), IVerticalPageListener {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
       savedInstanceState: Bundle?) = inflater.inflate(R.layout.fragment_web_view, container,
       false)!!
@@ -31,12 +32,21 @@ class WebViewFragment : Fragment() {
     }
 
     wv.webViewClient = ViewClient()
-    wv.webChromeClient = ChromClient()
+    wv.webChromeClient = ChromeClient()
 
     wv.loadUrl("https://www.kotlincn.net/docs/reference/")
   }
 
+  override fun onPageUp() {
+    wv.scrollTo(0, 0)
+  }
+
+  override fun onPageDown() {
+    // 由于该页面本身是需要滑动到底部才会执行onPageDown的，故此处不需要执行操作
+    //wv.scrollTo(0, wv.getTotalHeight())
+  }
+
   private inner class ViewClient : WebViewClient()
 
-  private inner class ChromClient : WebChromeClient()
+  private inner class ChromeClient : WebChromeClient()
 }
