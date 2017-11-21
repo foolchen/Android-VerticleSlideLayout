@@ -53,7 +53,8 @@ class MainActivity : AppCompatActivity() {
     val webFragment = WebViewFragment()
     val recycleFragment = RecyclerViewFragment()
 
-    supportFragmentManager.beginTransaction().replace(R.id.frame1, webFragment).replace(R.id.frame2,
+    supportFragmentManager.beginTransaction().replace(R.id.frame1, webFragment).replace(
+        R.id.frame2,
         recycleFragment).commit()
 
     vsl.setVerticalPageListener(object : IVerticalPageListener {

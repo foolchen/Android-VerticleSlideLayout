@@ -38,13 +38,16 @@ class WebViewFragment : Fragment(), IVerticalPageListener {
   }
 
   override fun onPageUp(currentPage: Int, futurePage: Int) {
-
-    wv.scrollTo(0, 0)
+    if (currentPage == 0) {
+      wv.scrollTo(0, 0)
+    } else if (currentPage == 1) {
+      wv.scrollTo(0, wv.getTotalHeight())
+    }
   }
 
   override fun onPageDown(currentPage: Int, futurePage: Int) {
     // 由于该页面本身是需要滑动到底部才会执行onPageDown的，故此处不需要执行操作
-    wv.scrollTo(0, wv.getTotalHeight())
+    //wv.scrollTo(0, wv.getTotalHeight())
   }
 
   private inner class ViewClient : WebViewClient()
