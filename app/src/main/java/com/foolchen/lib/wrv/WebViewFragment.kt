@@ -37,13 +37,14 @@ class WebViewFragment : Fragment(), IVerticalPageListener {
     wv.loadUrl("https://www.kotlincn.net/docs/reference/")
   }
 
-  override fun onPageUp() {
+  override fun onPageUp(currentPage: Int, futurePage: Int) {
+
     wv.scrollTo(0, 0)
   }
 
-  override fun onPageDown() {
+  override fun onPageDown(currentPage: Int, futurePage: Int) {
     // 由于该页面本身是需要滑动到底部才会执行onPageDown的，故此处不需要执行操作
-    //wv.scrollTo(0, wv.getTotalHeight())
+    wv.scrollTo(0, wv.getTotalHeight())
   }
 
   private inner class ViewClient : WebViewClient()

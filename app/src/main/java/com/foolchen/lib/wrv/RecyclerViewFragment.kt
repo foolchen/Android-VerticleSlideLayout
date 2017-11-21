@@ -25,11 +25,11 @@ class RecyclerViewFragment : Fragment(), IVerticalPageListener {
 
   }
 
-  override fun onPageUp() {
+  override fun onPageUp(currentPage: Int, futurePage: Int) {
     rv.scrollToPosition(0)
   }
 
-  override fun onPageDown() {
+  override fun onPageDown(currentPage: Int, futurePage: Int) {
     // 此处可执行一些初始化及加载操作
   }
 }

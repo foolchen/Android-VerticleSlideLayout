@@ -57,14 +57,14 @@ class MainActivity : AppCompatActivity() {
         recycleFragment).commit()
 
     vsl.setVerticalPageListener(object : IVerticalPageListener {
-      override fun onPageUp() {
-        webFragment.onPageUp()
-        recycleFragment.onPageUp()
+      override fun onPageUp(currentPage: Int, futurePage: Int) {
+        webFragment.onPageUp(currentPage, futurePage)
+        recycleFragment.onPageUp(currentPage, futurePage)
       }
 
-      override fun onPageDown() {
-        webFragment.onPageDown()
-        recycleFragment.onPageDown()
+      override fun onPageDown(currentPage: Int, futurePage: Int) {
+        webFragment.onPageDown(currentPage, futurePage)
+        recycleFragment.onPageDown(currentPage, futurePage)
       }
 
     })
