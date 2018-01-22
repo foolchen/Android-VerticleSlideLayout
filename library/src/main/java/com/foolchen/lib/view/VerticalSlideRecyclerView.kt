@@ -55,8 +55,10 @@ class VerticalSlideRecyclerView : RecyclerView, IVerticalSlideView {
               checkIsBottom()
             }
             parent.requestDisallowInterceptTouchEvent(!allowParentTouchEvent)
+          } else {
+            // Y轴方向位移<X轴方向位移时，则允许父布局获取事件，防止与手势右划返回冲突
+            parent.requestDisallowInterceptTouchEvent(false)
           }
-
         }
 
       }

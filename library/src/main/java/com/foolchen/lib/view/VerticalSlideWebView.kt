@@ -3,8 +3,11 @@ package com.foolchen.lib.view
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.http.SslError
+import android.os.Build
 import android.os.Message
+import android.support.annotation.RequiresApi
 import android.util.AttributeSet
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.webkit.*
@@ -19,8 +22,9 @@ import com.foolchen.lib.VerticalSlideLayout
  * 下午2:10
  */
 open class VerticalSlideWebView : WebView, IVerticalSlideView {
-
-
+  private val TAG = "VerticalSlideWebView"
+  private var mInterceptX = 0F
+  private var mInterceptY = 0F
   private var mDownX = 0F
   private var mDownY = 0F
   private var mScale: Float = scale
@@ -31,6 +35,7 @@ open class VerticalSlideWebView : WebView, IVerticalSlideView {
   constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
       defStyleAttr)
 
+  @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
   constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(
       context, attrs, defStyleAttr, defStyleRes)
 
@@ -43,6 +48,7 @@ open class VerticalSlideWebView : WebView, IVerticalSlideView {
         MotionEvent.ACTION_DOWN -> {
           mDownX = x
           mDownY = y
+          Log.d(TAG, "dispatchTouchEvent,触发禁止父布局获取事件")
 
           // 在触发ACTION_DOWN时还无法得知WebView是否滑动到了顶部/底部，此时禁止父布局处理触摸事件
           // 防止错误的进行了翻页
@@ -65,6 +71,9 @@ open class VerticalSlideWebView : WebView, IVerticalSlideView {
               checkIsBottom()
             }
             parent.requestDisallowInterceptTouchEvent(!allowParentTouchEvent)
+          } else {
+            // Y轴方向位移<X轴方向位移时，则允许父布局获取事件，防止与手势右划返回冲突
+            parent.requestDisallowInterceptTouchEvent(false)
           }
         }
       }
