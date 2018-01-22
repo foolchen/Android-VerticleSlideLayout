@@ -7,11 +7,9 @@ import android.os.Build
 import android.os.Message
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.webkit.*
-
 import com.foolchen.lib.VerticalSlideLayout
 
 /**
@@ -22,9 +20,6 @@ import com.foolchen.lib.VerticalSlideLayout
  * 下午2:10
  */
 open class VerticalSlideWebView : WebView, IVerticalSlideView {
-  private val TAG = "VerticalSlideWebView"
-  private var mInterceptX = 0F
-  private var mInterceptY = 0F
   private var mDownX = 0F
   private var mDownY = 0F
   private var mScale: Float = scale
@@ -48,7 +43,6 @@ open class VerticalSlideWebView : WebView, IVerticalSlideView {
         MotionEvent.ACTION_DOWN -> {
           mDownX = x
           mDownY = y
-          Log.d(TAG, "dispatchTouchEvent,触发禁止父布局获取事件")
 
           // 在触发ACTION_DOWN时还无法得知WebView是否滑动到了顶部/底部，此时禁止父布局处理触摸事件
           // 防止错误的进行了翻页
