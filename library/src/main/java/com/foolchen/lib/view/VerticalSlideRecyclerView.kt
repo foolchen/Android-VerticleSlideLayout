@@ -16,7 +16,7 @@ import com.foolchen.lib.VerticalSlideLayout
  * 2017/11/17
  * 上午10:09
  */
-class VerticalSlideRecyclerView : RecyclerView, IVerticalSlideView {
+open class VerticalSlideRecyclerView : RecyclerView, IVerticalSlideView {
   private var mDownX = 0F
   private var mDownY = 0F
 
