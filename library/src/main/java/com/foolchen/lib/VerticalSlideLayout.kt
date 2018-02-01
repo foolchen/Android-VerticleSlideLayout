@@ -146,6 +146,10 @@ class VerticalSlideLayout : ViewGroup, IVerticalSlideController {
     mSlideEnable = enable
   }
 
+  fun getPage(): Int {
+    return mPage
+  }
+
   private inner class DragCallBack : ViewDragHelper.Callback() {
 
     override fun tryCaptureView(child: View,
