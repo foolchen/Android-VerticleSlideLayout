@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.AttributeSet
 import android.view.MotionEvent
+import com.foolchen.lib.IVerticalSlideController
+import com.foolchen.lib.IVerticalSlideControllerHelper
 import com.foolchen.lib.VerticalSlideLayout
 
 /**
@@ -16,16 +18,16 @@ import com.foolchen.lib.VerticalSlideLayout
  * 2017/11/17
  * 上午10:09
  */
-open class VerticalSlideRecyclerView : RecyclerView, IVerticalSlideView {
+open class VerticalSlideRecyclerView : RecyclerView, IVerticalSlideView, IVerticalSlideControllerHelper {
+  val TAG = "VerticalSlideRecyclerView"
   private var mDownX = 0F
   private var mDownY = 0F
-
+  private var mIVerticalSlideController: IVerticalSlideController? = null
 
   constructor(context: Context?) : super(context)
   constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
   constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs,
       defStyle)
-
 
   override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
     with(ev) {
@@ -54,9 +56,11 @@ open class VerticalSlideRecyclerView : RecyclerView, IVerticalSlideView {
               // 此时如果View已经滑动到底部，则可以向上拖拽，交由父布局处理
               checkIsBottom()
             }
+            mIVerticalSlideController?.controlSlideEnable(true)
             parent.requestDisallowInterceptTouchEvent(!allowParentTouchEvent)
           } else {
             // Y轴方向位移<X轴方向位移时，则允许父布局获取事件，防止与手势右划返回冲突
+            mIVerticalSlideController?.controlSlideEnable(false)
             parent.requestDisallowInterceptTouchEvent(false)
           }
         }
@@ -137,5 +141,9 @@ open class VerticalSlideRecyclerView : RecyclerView, IVerticalSlideView {
     }
 
     return lastCompleteVisiblePosition >= layoutManager.itemCount - 1
+  }
+
+  override fun setIVerticalSlideController(controller: IVerticalSlideController?) {
+    mIVerticalSlideController = controller
   }
 }

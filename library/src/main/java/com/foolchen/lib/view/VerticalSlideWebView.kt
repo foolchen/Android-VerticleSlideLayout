@@ -9,7 +9,10 @@ import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
 import android.webkit.*
+import com.foolchen.lib.IVerticalSlideController
+import com.foolchen.lib.IVerticalSlideControllerHelper
 import com.foolchen.lib.VerticalSlideLayout
 
 /**
@@ -19,11 +22,13 @@ import com.foolchen.lib.VerticalSlideLayout
  * 2017/11/16
  * 下午2:10
  */
-open class VerticalSlideWebView : WebView, IVerticalSlideView {
+open class VerticalSlideWebView : WebView, IVerticalSlideView, IVerticalSlideControllerHelper {
+  val TAG = "VerticalSlideWebView"
   private var mDownX = 0F
   private var mDownY = 0F
   private var mScale: Float = scale
   private var mWebViewClientWrapper: WebViewClientWrapper? = null
+  private var mIVerticalSlideController: IVerticalSlideController? = null
 
   constructor(context: Context?) : super(context)
   constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -64,9 +69,11 @@ open class VerticalSlideWebView : WebView, IVerticalSlideView {
               // 此时如果已经位于底部，则当前View不消费事件，交给父布局
               checkIsBottom()
             }
+            mIVerticalSlideController?.controlSlideEnable(true)
             parent.requestDisallowInterceptTouchEvent(!allowParentTouchEvent)
           } else {
             // Y轴方向位移<X轴方向位移时，则允许父布局获取事件，防止与手势右划返回冲突
+            mIVerticalSlideController?.controlSlideEnable(false)
             parent.requestDisallowInterceptTouchEvent(false)
           }
         }
@@ -123,6 +130,10 @@ open class VerticalSlideWebView : WebView, IVerticalSlideView {
   }
 
   fun getTotalHeight(): Int = Math.floor((contentHeight * mScale).toDouble()).toInt()
+
+  override fun setIVerticalSlideController(controller: IVerticalSlideController?) {
+    mIVerticalSlideController = controller
+  }
 
   /**
    * [WebViewClient]的装饰类，用于包装直接设置进来的[WebViewClient]

@@ -1,6 +1,8 @@
 package com.foolchen.lib
 
+import android.annotation.TargetApi
 import android.content.Context
+import android.os.Build
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v4.view.ViewCompat
 import android.support.v4.widget.ViewDragHelper
@@ -26,7 +28,8 @@ import com.foolchen.lib.view.VerticalSlideWebView
  * 2017/11/17
  * 上午9:42
  */
-class VerticalSlideLayout : ViewGroup {
+class VerticalSlideLayout : ViewGroup, IVerticalSlideController {
+  val TAG = "VerticalSlideLayout"
 
   private val VEL_THRESHOLD = 6000 // 滑动速度的阈值，在手指离开屏幕时，如果Y轴的滑动速度超过该值，则认定拖动事件有效
   private val DISTANCE_THRESHOLD: Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -42,8 +45,10 @@ class VerticalSlideLayout : ViewGroup {
   private var mViewHeight = 0
   private var mPage = 0
   private var mAnimationFinished = true// 用于标识View的移动动画是否已结束
-
   private var mIVerticalPageListener: IVerticalPageListener? = null
+
+  private var mControlEnable = false
+  private var mSlideEnable = true
 
 
   constructor(context: Context?) : super(context)
@@ -51,6 +56,7 @@ class VerticalSlideLayout : ViewGroup {
   constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
       defStyleAttr)
 
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(
       context, attrs, defStyleAttr, defStyleRes)
 
@@ -122,12 +128,22 @@ class VerticalSlideLayout : ViewGroup {
       return true
     }
 
-    try {
-      mDragHelper.processTouchEvent(event)
-    } catch (e: Exception) {
+    if (mSlideEnable && mControlEnable) {
+      try {
+        mDragHelper.processTouchEvent(event)
+      } catch (e: Exception) {
+      }
+      return true
     }
+    return super.onTouchEvent(event)
+  }
 
-    return true
+  override fun controlSlideEnable(enable: Boolean) {
+    mControlEnable = enable
+  }
+
+  fun setSlideEnable(enable: Boolean) {
+    mSlideEnable = enable
   }
 
   private inner class DragCallBack : ViewDragHelper.Callback() {
