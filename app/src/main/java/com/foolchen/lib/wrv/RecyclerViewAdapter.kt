@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import kotlinx.android.synthetic.main.item_demo.view.*
 
 class DemoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -25,6 +26,9 @@ class DemoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
       // 此处不处理
     } else if (holder is DemoHolder) {
       holder.mTextView.text = mArray[position]
+      holder.mTextView.setOnClickListener {
+        Toast.makeText(holder.itemView.context, "点击", Toast.LENGTH_SHORT).show()
+      }
     }
   }
 

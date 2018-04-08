@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.foolchen.lib.view.IVerticalPageListener
+import com.r0adkll.slidr.Slidr
+import com.r0adkll.slidr.model.SlidrConfig
+import com.r0adkll.slidr.model.SlidrPosition
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -14,6 +17,12 @@ class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    Slidr.attach(this, SlidrConfig.Builder().position(SlidrPosition.LEFT)
+        .sensitivity(1f)
+        .edge(true)
+        //.listener(mSlidrListener)
+        .edgeSize(0.18f).build())
+
     setContentView(R.layout.activity_main)
     setSupportActionBar(toolbar)
 

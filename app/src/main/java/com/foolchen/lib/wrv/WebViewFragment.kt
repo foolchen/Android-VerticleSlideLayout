@@ -1,5 +1,6 @@
 package com.foolchen.lib.wrv
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,13 +11,31 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.foolchen.lib.VerticalSlideLayout
 import com.foolchen.lib.view.IVerticalPageListener
+import com.foolchen.lib.view.VerticalSlideWebView
 import kotlinx.android.synthetic.main.fragment_web_view.*
 
 class WebViewFragment : Fragment(), IVerticalPageListener {
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-      savedInstanceState: Bundle?) = inflater.inflate(R.layout.fragment_web_view, container,
-      false)!!
+      savedInstanceState: Bundle?): View {
+    val view = inflater.inflate(R.layout.fragment_web_view, container,
+        false)!!
+    mWv = view.findViewById(R.id.wv)
+    return view
+  }
+
+  private var mWv: VerticalSlideWebView? = null
+
+
+  override fun onResume() {
+    super.onResume()
+    if (activity is MainActivity) {
+      mWv?.setIVerticalSlideController(
+          (activity as MainActivity).findViewById<VerticalSlideLayout>(R.id.vsl))
+    }
+  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
