@@ -20,6 +20,7 @@ import com.foolchen.lib.VerticalSlideLayout
  */
 open class VerticalSlideRecyclerView : RecyclerView, IVerticalSlideView, IVerticalSlideControllerHelper {
   val TAG = "VerticalSlideRecyclerView"
+  private val HORIZONTAL_SLOP = 60
   private var mDownX = 0F
   private var mDownY = 0F
   private var mIVerticalSlideController: IVerticalSlideController? = null
@@ -45,23 +46,25 @@ open class VerticalSlideRecyclerView : RecyclerView, IVerticalSlideView, IVertic
           val dx = x - mDownX
           val dy = y - mDownY
 
-          if (Math.abs(dy) > Math.abs(dx)) {
+          if (Math.abs(dy) <= Math.abs(dx) && Math.abs(dx) > HORIZONTAL_SLOP) {
+            // Y轴方向位移<X轴方向位移时，则允许父布局获取事件，防止与手势右划返回冲突
+            mIVerticalSlideController?.controlSlideEnable(false)
+            parent.requestDisallowInterceptTouchEvent(false)
+          } else {
             // Y轴方向位移>X轴方向位移，则认为是垂直方向发生了位移
             allowParentTouchEvent = if (dy > 0) {
               // 当前坐标>上次坐标，向下拖动View
               // 此时如果View已经滑动到顶部，则可以向下拖拽，交由父布局处理
               checkIsTop()
-            } else {
+            } else if (dy < 0) {
               // 当前坐标<上次坐标，向上拖动View
               // 此时如果View已经滑动到底部，则可以向上拖拽，交由父布局处理
               checkIsBottom()
+            } else {
+              false
             }
             mIVerticalSlideController?.controlSlideEnable(true)
             parent.requestDisallowInterceptTouchEvent(!allowParentTouchEvent)
-          } else {
-            // Y轴方向位移<X轴方向位移时，则允许父布局获取事件，防止与手势右划返回冲突
-            mIVerticalSlideController?.controlSlideEnable(false)
-            parent.requestDisallowInterceptTouchEvent(false)
           }
         }
 

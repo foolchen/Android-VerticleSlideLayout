@@ -9,7 +9,6 @@ import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
 import android.webkit.*
 import com.foolchen.lib.IVerticalSlideController
 import com.foolchen.lib.IVerticalSlideControllerHelper
@@ -24,6 +23,7 @@ import com.foolchen.lib.VerticalSlideLayout
  */
 open class VerticalSlideWebView : WebView, IVerticalSlideView, IVerticalSlideControllerHelper {
   val TAG = "VerticalSlideWebView"
+  private val HORIZONTAL_SLOP = 60
   private var mDownX = 0F
   private var mDownY = 0F
   private var mScale: Float = scale
@@ -59,22 +59,24 @@ open class VerticalSlideWebView : WebView, IVerticalSlideView, IVerticalSlideCon
           val dy = y - mDownY
 
           // 在Y轴方向的位移>在X轴方向的位移时，认为发生了垂直方向的拖动
-          if (Math.abs(dy) > Math.abs(dx)) {
+          if (Math.abs(dy) <= Math.abs(dx) && Math.abs(dx) > HORIZONTAL_SLOP) {
+            // Y轴方向位移<X轴方向位移时，则允许父布局获取事件，防止与手势右划返回冲突
+            mIVerticalSlideController?.controlSlideEnable(false)
+            parent.requestDisallowInterceptTouchEvent(false)
+          } else {
             allowParentTouchEvent = if (dy > 0) {
               // 当前坐标>上次坐标，为向下拖动View
               // 此时如果已经位于顶部，则当前View不消费事件，交给父布局
               checkIsTop()
-            } else {
+            } else if (dy < 0) {
               // 当前坐标<上次坐标，为向上拖动
               // 此时如果已经位于底部，则当前View不消费事件，交给父布局
               checkIsBottom()
+            } else {
+              false
             }
             mIVerticalSlideController?.controlSlideEnable(true)
             parent.requestDisallowInterceptTouchEvent(!allowParentTouchEvent)
-          } else {
-            // Y轴方向位移<X轴方向位移时，则允许父布局获取事件，防止与手势右划返回冲突
-            mIVerticalSlideController?.controlSlideEnable(false)
-            parent.requestDisallowInterceptTouchEvent(false)
           }
         }
       }
