@@ -17,11 +17,12 @@ class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    Slidr.attach(this, SlidrConfig.Builder().position(SlidrPosition.LEFT)
-        .sensitivity(1f)
-        .edge(true)
-        //.listener(mSlidrListener)
-        .edgeSize(0.18f).build())
+    Slidr.attach(this, SlidrConfig.Builder()
+            .position(SlidrPosition.LEFT)
+            .sensitivity(1f)
+            .edge(true)
+            .edgeSize(0.33f)
+            .build())
 
     setContentView(R.layout.activity_main)
     setSupportActionBar(toolbar)

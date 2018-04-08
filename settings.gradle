@@ -1,1 +1,1 @@
-include ':app', ':library', ':lib-slidr'
+include ':app', ':verticalslidelayout', ':lib-slidr'
